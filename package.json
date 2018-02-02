@@ -3,6 +3,10 @@
   "version": "0.1.2",
   "description": "Store, something like Redux",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nuware/store.git"
+  },
   "scripts": {
     "lint": "eslint --fix index.js src/ test/",
     "test": "npm run lint && mocha"
