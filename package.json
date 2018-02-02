@@ -11,7 +11,7 @@
     "lint": "eslint --fix index.js src/ test/",
     "test": "npm run lint && mocha"
   },
-  "author": "Dmitry Dudin <dima.dudin@gmail.com>",
+  "author": "Dmitry Dudin <dima@nuware.ru>",
   "license": "MIT",
   "dependencies": {
     "ramda": "^0.25.0"
