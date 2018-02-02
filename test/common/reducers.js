@@ -4,7 +4,7 @@ const { ADD_ITEM, TOGGLE_ITEM } = require('./constants')
 const { actionTypeEqual, ActionPayloadLens } = require('./utils')
 
 const itemsReducer = function (state, action) {
-  const payload = R.view(ActionPayloadLens)
+  const payload = R.view(ActionPayloadLens, action)
 
   if (actionTypeEqual(ADD_ITEM, action)) {
     const itemsLens = R.lensProp('items')
@@ -14,7 +14,7 @@ const itemsReducer = function (state, action) {
 
   if (actionTypeEqual(TOGGLE_ITEM, action)) {
     const itemLens = R.lensProp('item')
-    return R.set(itemLens, action.payload)(state)
+    return R.set(itemLens, payload)(state)
   }
 
   return state
