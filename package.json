@@ -1,36 +1,48 @@
 {
   "name": "@nuware/store",
   "version": "0.1.3",
-  "description": "Store, something like Redux",
-  "main": "index.js",
+  "description": "Store",
+  "main": "dist/index.js",
+  "module": "es/index.js",
+  "files": [
+    "dist",
+    "es"
+  ],
   "scripts": {
-    "lint": "eslint --fix index.js src/ test/",
-    "test": "npm run lint && mocha"
+    "clean": "rimraf dist es",
+    "lint": "eslint src/index.js",
+    "build:es": "rollup -f esm -i src/index.js -o es/index.js -e @nuware/functions,@nuware/lenses,@nuware/emitter",
+    "build:umd": "rollup -f umd -i src/index.js -o dist/index.js -n Store -g @nuware/functions:F,@nuware/lenses:L,@nuware/emitter:Emitter",
+    "build": "npm run build:es && npm run build:umd",
+    "release": "npm run clean && npm run lint && npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nuware/store.git"
+    "url": "git+https://github.com/nuware/store.git"
   },
   "author": "Dmitry Dudin <dima@nuware.ru>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nuware/store/issues"
   },
-  "homepage": "https://github.com/nuware/store#readme",
-  "dependencies": {
-    "ramda": "^0.25.0"
-  },
   "devDependencies": {
-    "chai": "^4.1.2",
-    "eslint": "^4.16.0",
-    "eslint-config-standard": "^11.0.0-beta.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^5.2.1",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "mocha": "^5.0.0"
+    "eslint": "^5.2.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "rollup": "^0.63.4"
+  },
+  "dependencies": {
+    "@nuware/functions": "^0.1.7",
+    "@nuware/lenses": "^0.1.6",
+    "@nuware/emitter": "^0.1.6"
   },
   "eslintConfig": {
-    "extends": "standard"
+    "extends": "standard",
+    "rules": {
+      "no-multi-spaces": "off"
+    }
   }
 }
