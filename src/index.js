@@ -30,9 +30,9 @@ import {
 
 import Emitter from '@nuware/emitter'
 
-const Store = (initialState = {}, options = {
+const Store = (initialState = {}, {
   separator = '/'
-} = {}) => {
+}) => {
   const emitter  = Emitter()
   const RootLens = Prop('ROOT')
 
