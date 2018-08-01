@@ -6,6 +6,36 @@
 npm install @nuware/store --save
 ```
 
+or
+
+```html
+<script defer src="https://unpkg.com/@nuware/functions@latest/dist/index.js"></script>
+<script defer src="https://unpkg.com/@nuware/lenses@latest/dist/index.js"></script>
+<script defer src="https://unpkg.com/@nuware/emitter@latest/dist/index.js"></script>
+<script defer src="https://unpkg.com/@nuware/store@latest/dist/index.js"></script>
+
+```
+
+## Usage
+
+Browser
+
+```javascript
+const Store = window.Store
+```
+
+Node
+
+```javascript
+const Store = require('@nuware/store')
+```
+
+or
+
+```javascript
+import Store from '@nuware/store'
+```
+
 ## Authors
 
 * Dmitry Dudin <dima@nuware.ru>
