@@ -127,7 +127,7 @@ const Store = (initialState = {}, {
       emitter.emit(key)(payload)
     })(events)
 
-    return void(0)
+    return void (0)
   }
 
   const get = (path) => {
@@ -140,7 +140,7 @@ const Store = (initialState = {}, {
     const events = Events(way, ['created', 'changed'])
     state = Set(way.lens())(value)(state)
     emit(events)
-    return void(0)
+    return void (0)
   }
 
   const del = (path) => {
@@ -148,7 +148,7 @@ const Store = (initialState = {}, {
     const events = Events(way, ['removed', 'changed'])
     state = Over(way.parent().lens())(dissoc(way.key()))(state)
     emit(events)
-    return void(0)
+    return void (0)
   }
 
   return freeze({

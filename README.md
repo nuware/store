@@ -9,11 +9,13 @@ npm install @nuware/store --save
 or
 
 ```html
-<script defer src="https://unpkg.com/@nuware/functions@latest/dist/index.js"></script>
-<script defer src="https://unpkg.com/@nuware/lenses@latest/dist/index.js"></script>
-<script defer src="https://unpkg.com/@nuware/emitter@latest/dist/index.js"></script>
-<script defer src="https://unpkg.com/@nuware/store@latest/dist/index.js"></script>
+<script defer src="https://unpkg.com/@nuware/store@latest/dist/store.umd.js"></script>
+```
 
+or
+
+```html
+<script defer src="https://unpkg.com/@nuware/store@latest/dist/store.min.js"></script>
 ```
 
 ## Usage
@@ -21,7 +23,7 @@ or
 Browser
 
 ```javascript
-const Store = window.Store
+const Store = window.nuware.Store
 ```
 
 Node
