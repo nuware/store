@@ -38,7 +38,7 @@ const Store = (initialState = {}, {
 
   let state = Set(RootLens)(initialState)({})
 
-  const Way = (path) => {
+  const Way = (path = '') => {
     const xs = eq('')(path) ? [] : split(separator)(path)
     const origin = join(separator)(reverse(tail(reverse(xs))))
     const key = last(xs) || ''
@@ -93,7 +93,7 @@ const Store = (initialState = {}, {
 
     const buildChangedEvents = (way, acc = []) => {
       if (ne('')(way.key())) {
-        const key = buildEventKey('changed', way.origin())
+        const key = buildEventKey('changed', way.toString())
         const found = find(eq(key))(emitterStateKeys)
         if (found) {
           acc = append(buildEvent('changed', way))(acc)
@@ -116,7 +116,7 @@ const Store = (initialState = {}, {
 
   const emit = (events) => {
     each(({ type, way }) => {
-      const key = buildEventKey(type, way.origin())
+      const key = buildEventKey(type, eq(type)('changed') ? way.toString() : way.origin())
       const payload = freeze({
         key: way.key(),
         origin: way.origin(),
