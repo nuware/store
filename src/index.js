@@ -18,7 +18,8 @@ import {
   find,
   apply,
   compose,
-  freeze
+  freeze,
+  isObject
 } from '@nuware/functions'
 
 import {
@@ -136,6 +137,9 @@ const Store = (initialState = {}, {
   }
 
   const set = (path) => (value) => {
+    if (isObject(value)) {
+      return map((key) => set(join(separator)([path, key]))(Get(Prop(key))(value)))(keys(value))
+    }
     const way = Way(path)
     const events = Events(way, ['created', 'changed'])
     state = Set(way.lens())(value)(state)
