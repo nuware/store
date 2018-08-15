@@ -1,6 +1,6 @@
 {
   "name": "@nuware/store",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Store",
   "main": "dist/store.umd.js",
   "module": "dist/store.esm.js",
