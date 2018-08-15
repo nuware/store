@@ -34,9 +34,9 @@
     "rollup-plugin-node-resolve": "^3.3.0"
   },
   "dependencies": {
-    "@nuware/functions": "^0.1.8",
-    "@nuware/lenses": "^0.1.7",
-    "@nuware/emitter": "^0.1.7"
+    "@nuware/functions": "^0.1.10",
+    "@nuware/lenses": "^0.1.8",
+    "@nuware/emitter": "^0.1.11"
   },
   "eslintConfig": {
     "extends": "standard",
