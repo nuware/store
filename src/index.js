@@ -85,6 +85,7 @@ const Store = (initialState) => {
     const childsNotifications = (type, path, properties, st) => {
       return reduce((acc, property) => {
         return append(Notification(type, path, {
+          ref: () => Ref(path.child(property)),
           path: path.toString(),
           key: property,
           value: getIn(Path(property))(st)
@@ -121,6 +122,7 @@ const Store = (initialState) => {
 
       if (has(VALUE_EVENT)(types) && not(equal(oldestValue)(newestValue))) {
         acc = append(Notification(VALUE_EVENT, path, {
+          ref: () => Ref(path),
           path: path.toString(),
           value: newestValue
         }))(acc)
