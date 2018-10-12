@@ -172,7 +172,7 @@ const Store = (initialState) => {
   }
 
   const store = freeze({
-    ref: () => Ref(Path()),
+    ref: (...args) => Ref(Path(args)),
     CHILD_ADDED_EVENT,
     CHILD_CHANGED_EVENT,
     CHILD_REMOVED_EVENT,
