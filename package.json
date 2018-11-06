@@ -1,6 +1,6 @@
 {
   "name": "@nuware/store",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "State container",
   "main": "dist/store.cjs.js",
   "module": "dist/store.esm.js",
