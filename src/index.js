@@ -39,11 +39,6 @@ const Store = (initialState) => {
 
   const EMPTY_STATE = null
 
-  const VALUE_EVENT = 'value'
-  const CHILD_ADDED_EVENT = 'child-added'
-  const CHILD_CHANGED_EVENT = 'child-changed'
-  const CHILD_REMOVED_EVENT = 'child-removed'
-
   const emitter = Emitter()
 
   const Path = (...args) => {
@@ -66,7 +61,7 @@ const Store = (initialState) => {
     })
   }
 
-  const Notification = (type, path, payload) => {
+  const Notice = (type, path, payload) => {
     const k = join(EVENT_SEPARATOR)([type, path.toString()])
     return () => emitter.emit(k)(payload)
   }
@@ -84,7 +79,7 @@ const Store = (initialState) => {
   const compareState = (oldest, newest) => {
     const childsNotifications = (type, path, properties, st) => {
       return reduce((acc, property) => {
-        return append(Notification(type, path, {
+        return append(Notice(type, path, {
           ref: () => Ref(path.child(property)),
           path: path.toString(),
           key: property,
@@ -93,7 +88,7 @@ const Store = (initialState) => {
       })([])(properties)
     }
 
-    const notifications = reduce((acc, curr) => {
+    const notices = reduce((acc, curr) => {
       const types = Get(Prop(curr))(paths())
 
       if (eq(0)(keys(types).length)) return acc
@@ -102,26 +97,26 @@ const Store = (initialState) => {
       const oldestValue = getIn(path)(oldest)
       const newestValue = getIn(path)(newest)
 
-      if (has(CHILD_ADDED_EVENT)(types)) {
+      if (has(Store.CHILD_ADDED_EVENT)(types)) {
         const props = filter((k) => not(has(k)(oldestValue)))(keys(newestValue))
-        acc = concat(childsNotifications(CHILD_ADDED_EVENT, path, props, newestValue))(acc)
+        acc = concat(childsNotifications(Store.CHILD_ADDED_EVENT, path, props, newestValue))(acc)
       }
 
-      if (has(CHILD_REMOVED_EVENT)(types)) {
+      if (has(Store.CHILD_REMOVED_EVENT)(types)) {
         const props = filter((k) => not(has(k)(newestValue)))(keys(oldestValue))
-        acc = concat(childsNotifications(CHILD_REMOVED_EVENT, path, props, newestValue))(acc)
+        acc = concat(childsNotifications(Store.CHILD_REMOVED_EVENT, path, props, newestValue))(acc)
       }
 
-      if (has(CHILD_CHANGED_EVENT)(types)) {
+      if (has(Store.CHILD_CHANGED_EVENT)(types)) {
         const props = compose(
           filter((k) => not(equal(Get(Prop(k))(oldestValue))(Get(Prop(k))(newestValue)))),
           filter((k) => has(k)(oldestValue))
         )(keys(newestValue))
-        acc = concat(childsNotifications(CHILD_CHANGED_EVENT, path, props, newestValue))(acc)
+        acc = concat(childsNotifications(Store.CHILD_CHANGED_EVENT, path, props, newestValue))(acc)
       }
 
-      if (has(VALUE_EVENT)(types) && not(equal(oldestValue)(newestValue))) {
-        acc = append(Notification(VALUE_EVENT, path, {
+      if (has(Store.VALUE_EVENT)(types) && not(equal(oldestValue)(newestValue))) {
+        acc = append(Notice(Store.VALUE_EVENT, path, {
           ref: () => Ref(path),
           path: path.toString(),
           value: newestValue
@@ -133,7 +128,7 @@ const Store = (initialState) => {
 
     _state = newest
 
-    return notifications
+    return notices
   }
 
   const Ref = (path) => {
@@ -144,14 +139,14 @@ const Store = (initialState) => {
       set: (data) => {
         const oldest = getIn(Path())(state())
         const newest = setIn(path, data)(state())
-        const notifications = compareState(oldest, newest)
-        return each((fn) => apply(fn)())(notifications)
+        const notices = compareState(oldest, newest)
+        return each((fn) => apply(fn)())(notices)
       },
       remove: () => {
         const oldest = getIn(Path())(state())
         const newest = removeIn(path)(state())
-        const notifications = compareState(oldest, newest)
-        return each((fn) => apply(fn)())(notifications)
+        const notices = compareState(oldest, newest)
+        return each((fn) => apply(fn)())(notices)
       },
       off: (type, handler) => {
         const k = join(EVENT_SEPARATOR)([type, path.toString()])
@@ -165,6 +160,27 @@ const Store = (initialState) => {
         const k = join(EVENT_SEPARATOR)([type, path.toString()])
         emitter.on(k)(handler)
         _paths = Over(Prop(path.toString()))(assoc(type)(true))(paths())
+
+        if (eq(Store.CHILD_ADDED_EVENT)(type)) {
+          const st = ref.get()
+          each(property => {
+            Notice(type, path, {
+              ref: () => Ref(path.child(property)),
+              path: path.toString(),
+              key: property,
+              value: getIn(Path(property))(st)
+            })()
+          })(keys(st))
+        }
+
+        if (eq(Store.VALUE_EVENT)(type)) {
+          Notice(type, path, {
+            ref: () => Ref(path),
+            path: path.toString(),
+            value: ref.get()
+          })()
+        }
+
         return () => ref.off(type, handler)
       },
       inspect: () => `Ref(${path.toString()})`
@@ -173,15 +189,42 @@ const Store = (initialState) => {
     return ref
   }
 
-  const store = freeze({
-    ref: (...args) => Ref(Path(args)),
-    CHILD_ADDED_EVENT,
-    CHILD_CHANGED_EVENT,
-    CHILD_REMOVED_EVENT,
-    VALUE_EVENT
+  return freeze({
+    ref: (...args) => Ref(Path(args))
   })
-
-  return store
 }
+
+Object.defineProperty(Store, 'CHILD_ADDED_EVENT', {
+  enumerable: false,
+  configurable: false,
+  writable: false,
+  value: 'child-added'
+})
+
+Object.defineProperty(Store, 'CHILD_CHANGED_EVENT', {
+  enumerable: false,
+  configurable: false,
+  writable: false,
+  value: 'child-changed'
+})
+
+Object.defineProperty(Store, 'CHILD_REMOVED_EVENT', {
+  enumerable: false,
+  configurable: false,
+  writable: false,
+  value: 'child-removed'
+})
+
+Object.defineProperty(Store, 'VALUE_EVENT', {
+  enumerable: false,
+  configurable: false,
+  writable: false,
+  value: 'value'
+})
+
+// const VALUE_EVENT = 'value'
+// const CHILD_ADDED_EVENT = 'child-added'
+// const CHILD_CHANGED_EVENT = 'child-changed'
+// const CHILD_REMOVED_EVENT = 'child-removed'
 
 export default Store
