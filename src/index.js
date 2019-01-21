@@ -21,7 +21,8 @@ import {
   flatten,
   reverse,
   compose,
-  freeze
+  freeze,
+  isDefined
 } from '@nuware/functions'
 
 import {
@@ -72,7 +73,10 @@ const Store = (initialState) => {
   const paths = () => _paths
   const state = () => _state
 
-  const getIn = (path) => (st) => Get(path.toLens())(st) || EMPTY_STATE
+  const getIn = (path) => (st) => {
+    const result = Get(path.toLens())(st)
+    return isDefined(result) ? result : EMPTY_STATE
+  }
   const setIn = (path, data) => (st) => Set(path.toLens())(data)(st)
   const removeIn = (path) => (st) => Over(path.parent().toLens())(dissoc(path.key()))(st)
 
